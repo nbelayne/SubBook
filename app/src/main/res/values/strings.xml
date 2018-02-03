@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">SubBook</string>
+    <string name="title">Here are your Monthly Subscriptions:</string>
+    <string name="monthly_total">Your Total Monthly Charge is:</string>
+    <string name="sub_button">Add a New Subscription</string>
+    <string name="done">Done</string>
+    <string name="prompt">Fill in the details of your subscription below including the name,
+        date started, monthly charge, and any related comments:</string>
+    <string name="sub_name">Enter the name of your subscription:</string>
+    <string name="date_started">Date Started:</string>
+    <string name="monthly_charge">Enter the Monthly Charge ($):</string>
+    <string name="comment_message">Enter Comments Here:</string>
+    <string name="dateHint">YYYY-MM-DD</string>
+</resources>
