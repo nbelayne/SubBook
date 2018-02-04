@@ -1,3 +1,5 @@
+package com.example.nbelayne.subbook;
+
 /**
  *
  * An exception for data entered for a subscription does not meet the

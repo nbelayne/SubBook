@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">SubBook</string>
-    <string name="title">Here are your Monthly Subscriptions:</string>
+    <string name="title">Here are your Monthly Subscriptions:\n\n
+        (Single Click To Edit Item and Hold Item To Delete It)</string>
     <string name="monthly_total">Your Total Monthly Charge is:</string>
     <string name="sub_button">Add a New Subscription</string>
     <string name="done">Done</string>

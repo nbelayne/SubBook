@@ -9,9 +9,8 @@
     <ListView
         android:id="@+id/subList"
         android:layout_width="403dp"
-        android:layout_height="464dp"
+        android:layout_height="435dp"
         android:layout_marginBottom="8dp"
-        android:layout_marginTop="8dp"
         app:layout_constraintBottom_toTopOf="@+id/totalChargeText"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
@@ -20,14 +19,18 @@
     <TextView
         android:id="@+id/titleText"
         android:layout_width="406dp"
-        android:layout_height="26dp"
+        android:layout_height="91dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
         android:text="@string/title"
         android:textAlignment="center"
         android:textColor="@android:color/black"
         android:textSize="18sp"
         android:textStyle="bold"
-        app:layout_constraintRight_toRightOf="parent"
-        tools:layout_editor_absoluteY="4dp" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/totalChargeText"
@@ -48,7 +51,6 @@
         android:layout_height="24dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
-        android:text="TextView"
         android:textColor="@android:color/black"
         android:textSize="15sp"
         android:textStyle="bold"
@@ -61,6 +63,7 @@
         android:layout_width="405dp"
         android:layout_height="48dp"
         android:layout_marginBottom="8dp"
+        android:onClick="addSubscription"
         android:text="@string/sub_button"
         app:layout_constraintBottom_toBottomOf="parent"
         tools:layout_editor_absoluteX="3dp" />

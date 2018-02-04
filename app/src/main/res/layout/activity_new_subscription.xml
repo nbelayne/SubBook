@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.nbelayne.subbook.DisplayMessageActivity">
+    tools:context="com.example.nbelayne.subbook.DisplayNewSubscriptionActivity">
 
     <TextView
         android:id="@+id/titleDescription"
@@ -46,6 +46,7 @@
         android:ems="10"
         android:hint="Netflix"
         android:inputType="textPersonName"
+        android:text="Netlfix"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/nameText"
         app:layout_constraintTop_toBottomOf="@+id/titleDescription" />
@@ -74,6 +75,7 @@
         android:ems="10"
         android:hint="YYYY-MM-DD"
         android:inputType="textPersonName"
+        android:text="2008-01-05"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/dateText"
         app:layout_constraintTop_toBottomOf="@+id/nameEdit" />
@@ -126,7 +128,7 @@
 
     <EditText
         android:id="@+id/commentEdit"
-        android:layout_width="373dp"
+        android:layout_width="378dp"
         android:layout_height="96dp"
         android:layout_marginEnd="8dp"
         android:layout_marginLeft="16dp"
@@ -135,6 +137,7 @@
         android:ems="10"
         android:hint="Netflix for February"
         android:inputType="textPersonName"
+        android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -145,6 +148,7 @@
         android:layout_width="411dp"
         android:layout_height="80dp"
         android:layout_marginBottom="16dp"
+        android:onClick="newSubscription"
         android:text="@string/done"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
