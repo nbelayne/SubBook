@@ -1,0 +1,4 @@
+#Sun Feb 04 14:13:55 MST 2018
+base.0=/afs/ualberta.ca/home/n/b/nbelayne/SubBook/app/build/intermediates/transforms/dexMerger/debug/4
+path.0=classes.dex
+renamed.0=classes.dex
