@@ -12,6 +12,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -40,15 +41,15 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<Subscription> subList;
     private ArrayAdapter<Subscription> adapter;
     private Double totalMonthlyCharge = 0.0;
+    private int arrayPosition;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Button addSubButton = findViewById(R.id.addSub);
+        //Button addSubButton = findViewById(R.id.addSub);
         oldSubList =  findViewById(R.id.subList);
-        //TextView monthlyCharge = findViewById(R.id.monthlyCharge);
 
         subList = new ArrayList<>();
         adapter = new ArrayAdapter<Subscription>(this,
@@ -63,6 +64,7 @@ public class MainActivity extends AppCompatActivity {
                 monthlyCharge.setText("$" + String.format("%.2f", totalMonthlyCharge));
                 subList.remove(position);
                 adapter.notifyDataSetChanged();
+                //saveInFile();
                 return true;
             }
         });
@@ -72,43 +74,44 @@ public class MainActivity extends AppCompatActivity {
               Intent intent = new Intent(getApplicationContext(), DisplayNewSubscriptionActivity.class);
               // this is where parcelable comes in, parcelable lets u pass an object from activity to acitivty
               intent.putExtra("EDIT_SUBSCRIPTION", subList.get(position));
-              startActivityForResult(intent, 0);
+              arrayPosition = position;
+              totalMonthlyCharge -= Double.parseDouble(subList.get(position).getCharge());
+              startActivityForResult(intent, 1);
           }
         });
     }
 
     @Override
     protected void onStart(){
-        //called everytime it appears
         super.onStart();
-
         //loadFromFile();
-
+        //adapter.notifyDataSetChanged();
+        //saveInFile();
     }
 
     /**
      * Load subscription from list (most of code from LonelyTwitter)
      */
-//    private void loadFromFile() {
-//
-//        try {
-//            FileInputStream fis = openFileInput(FILENAME);
-//            BufferedReader in = new BufferedReader(new InputStreamReader(fis));
-//            sub.tostrubf.
-//            Gson gson = new Gson();
-//
-//            // Taken https://stackoverflow.com/questions/12384064/gson-convert-from-json-to-a-typed-arraylistt
-//            // 2018-01-23
-//            Type listType = new TypeToken<ArrayList<Subscription>>(){}.getType();
-//            subList = gson.fromJson(in, listType);
-//
-//        } catch (FileNotFoundException e) {
-//            subList = new ArrayList<Subscription>();
-//        } catch (IOException e) {
-//            throw new RuntimeException();
-//        }
-//
-//    }
+    private void loadFromFile() {
+
+        try {
+            FileInputStream fis = openFileInput(FILENAME);
+            BufferedReader in = new BufferedReader(new InputStreamReader(fis));
+
+            Gson gson = new Gson();
+
+            // Taken https://stackoverflow.com/questions/12384064/gson-convert-from-json-to-a-typed-arraylistt
+            // 2018-01-23
+            Type listType = new TypeToken<ArrayList<Subscription>>(){}.getType();
+            subList = gson.fromJson(in, listType);
+
+        } catch (FileNotFoundException e) {
+            subList = new ArrayList<Subscription>();
+        } catch (IOException e) {
+            throw new RuntimeException();
+        }
+
+    }
 
     /** Called when the user taps the ADD A NEW SUBSCRIPTION button*/
     public void addSubscription(View view){
@@ -119,9 +122,9 @@ public class MainActivity extends AppCompatActivity {
     }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Subscription sub = new Subscription(this);
         if (requestCode == 0) {
-            if(resultCode == Activity.RESULT_OK){
+            Subscription sub = new Subscription(this);
+            if (resultCode == Activity.RESULT_OK) {
                 sub.setName(data.getStringExtra(SUB_NAME));
                 sub.setComment(data.getStringExtra(SUB_COMMENT));
                 sub.setCharge(data.getStringExtra(SUB_CHARGE));
@@ -131,34 +134,52 @@ public class MainActivity extends AppCompatActivity {
                 TextView monthlyCharge = findViewById(R.id.monthlyCharge);
                 monthlyCharge.setText("$" + String.format("%.2f", totalMonthlyCharge));
                 adapter.notifyDataSetChanged();
-            } else {
-                // prompt error
+                saveInFile();
             }
         }
-    }//onActivityResult
+        else if (requestCode == 1){
+            if (resultCode == Activity.RESULT_OK) {
+                Subscription sub = subList.get(arrayPosition);
+                sub.setName(data.getStringExtra(SUB_NAME));
+                sub.setComment(data.getStringExtra(SUB_COMMENT));
+                sub.setCharge(data.getStringExtra(SUB_CHARGE));
+                sub.setDate(data.getStringExtra(SUB_DATE));
+                totalMonthlyCharge += Double.parseDouble(sub.getCharge());
+                TextView monthlyCharge = findViewById(R.id.monthlyCharge);
+                monthlyCharge.setText("$" + String.format("%.2f", totalMonthlyCharge));
+                adapter.notifyDataSetChanged();
+                saveInFile();
+            }
+        }
+/*            else {
+                Toast.makeText(getApplicationContext(),
+                        "DID NOT RECEIVE ACTIVITY_RESULT_OK",
+                        Toast.LENGTH_SHORT).show();
+            }*/
+    }
 
     /**
-     * Saves tweet in list
+     * Saves Subscriptions in list (most of code from LonelyTwitter)
      */
-//    private void saveInFile() {
-//        try {
-//
-//            FileOutputStream fos = openFileOutput(FILENAME,
-//                    Context.MODE_PRIVATE);
-//            BufferedWriter out = new BufferedWriter(new OutputStreamWriter(fos));
-//
-//            Gson gson = new Gson();
-//            gson.toJson(subList, out);
-//            out.flush();
-//
-//        } catch (FileNotFoundException e) {
-//            // TODO Auto-generated catch block
-//            throw new RuntimeException();
-//        } catch (IOException e) {
-//            // TODO Auto-generated catch block
-//            throw new RuntimeException();
-//        }
-//    }
+    private void saveInFile() {
+        try {
+
+            FileOutputStream fos = openFileOutput(FILENAME,
+                    Context.MODE_PRIVATE);
+            BufferedWriter out = new BufferedWriter(new OutputStreamWriter(fos));
+
+            Gson gson = new Gson();
+            gson.toJson(subList, out);
+            out.flush();
+
+        } catch (FileNotFoundException e) {
+            // TODO Auto-generated catch block
+            throw new RuntimeException();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            throw new RuntimeException();
+        }
+    }
 
 }
 

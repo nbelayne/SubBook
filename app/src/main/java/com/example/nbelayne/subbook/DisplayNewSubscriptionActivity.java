@@ -36,8 +36,8 @@ public class DisplayNewSubscriptionActivity extends AppCompatActivity {
         Intent i = getIntent();
         Subscription newSub = (Subscription) i.getParcelableExtra("EDIT_SUBSCRIPTION");
         subName.setText(newSub.getName());
-        startDate.setText(newSub.getCharge());
-        subCharge.setText(newSub.getDate());
+        startDate.setText(newSub.getDate());
+        subCharge.setText(newSub.getCharge());
         subComment.setText(newSub.getComment());
     }
 
