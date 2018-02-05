@@ -55,7 +55,6 @@ public class Subscription implements Parcelable {
     public String getName(){
         return this.name;
     }
-
     /**
      * Sets com.example.nbelayne.subbook.Subscription name
      *

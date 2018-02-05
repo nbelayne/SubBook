@@ -67,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
                 monthlyCharge.setText("$" + String.format("%.2f", totalMonthlyCharge));
                 subList.remove(position);
                 adapter.notifyDataSetChanged();
-                saveInFile();
+                //saveInFile();
                 return true;
             }
         });
@@ -126,7 +126,7 @@ public class MainActivity extends AppCompatActivity {
                 adapter.notifyDataSetChanged();
             }
         }
-        saveInFile();
+        //saveInFile();
     }
 
     /**
