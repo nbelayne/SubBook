@@ -5,8 +5,6 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.widget.Toast;
 
-import java.util.Date;
-
 /**
  * Created by nbelayne on 2/3/18.
  */
@@ -186,7 +184,7 @@ public class Subscription implements Parcelable {
     @Override
     public String toString(){
         return "Name: " + this.name + "\n" + "Date Created: " + this.date + "\n" +
-                "Monthly Charge: $" + this.charge + "\n" + "Comment: " + this.comment;
+                "Monthly Charge: $" + this.charge + "\n" + "Comment: " + this.comment + "\n";
     }
 
     @Override

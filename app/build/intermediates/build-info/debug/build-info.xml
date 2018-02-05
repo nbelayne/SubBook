@@ -5,28 +5,23 @@
     build-mode="COLD"
     density="560dpi"
     format="10"
-    ir-eligibility="METHOD_DELETED"
     plugin-version="3.0.1"
-    timestamp="1517805973913"
+    timestamp="1517817324229"
     token="4412827996731929549"
     verifier="COLD_SWAP_REQUESTED" >
 
     <task
         name="javac"
-        duration="1618" />
+        duration="409" />
     <task
         name="instant-run-dex"
         duration="0" />
     <task
         name="instant-run-transform"
-        duration="596" />
+        duration="0" />
     <task
         name="verifier"
-        duration="12" />
-
-    <artifact
-        location="/afs/ualberta.ca/home/n/b/nbelayne/SubBook/app/build/intermediates/split-apk/debug/slices/slice_0.apk"
-        type="SPLIT" />
+        duration="0" />
 
     <build
         build-mode="FULL"
@@ -103,12 +98,16 @@
     </build>
     <build
         build-mode="COLD"
-        ir-eligibility="METHOD_DELETED"
-        timestamp="1517805973913"
+        ir-eligibility="COMPATIBLE"
+        timestamp="1517817243109"
         verifier="COLD_SWAP_REQUESTED" >
         <artifact
             location="/afs/ualberta.ca/home/n/b/nbelayne/SubBook/app/build/intermediates/split-apk/debug/slices/slice_0.apk"
             type="SPLIT" />
     </build>
+    <build
+        build-mode="COLD"
+        timestamp="1517817324229"
+        verifier="COLD_SWAP_REQUESTED" />
 
 </instant-run>

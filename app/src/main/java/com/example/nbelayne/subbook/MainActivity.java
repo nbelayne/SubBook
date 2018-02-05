@@ -5,27 +5,18 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.DataOutputStream;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 
 
@@ -33,7 +24,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 public class MainActivity extends AppCompatActivity {
-    public static final String FILENAME = "subscriptions.sav";
+    public static final String FILENAME = "subscriptions.txt";
 
     public static final String SUB_NAME = "SUBSCRIPTION_NAME";
     public static final String SUB_DATE = "SUBSCRIPTION_DATE";
@@ -51,13 +42,12 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //Button addSubButton = findViewById(R.id.addSub);
         oldSubList =  findViewById(R.id.subList);
 
         subList = new ArrayList<>();
-        adapter = new ArrayAdapter<Subscription>(this,
+        /*adapter = new ArrayAdapter<Subscription>(this,
                 R.layout.list_item, subList);
-        oldSubList.setAdapter(adapter);
+        oldSubList.setAdapter(adapter);*/
 
         oldSubList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
@@ -67,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
                 monthlyCharge.setText("$" + String.format("%.2f", totalMonthlyCharge));
                 subList.remove(position);
                 adapter.notifyDataSetChanged();
-                //saveInFile();
+                saveInFile();
                 return true;
             }
         });
@@ -75,7 +65,6 @@ public class MainActivity extends AppCompatActivity {
           @Override
           public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
               Intent intent = new Intent(getApplicationContext(), DisplayNewSubscriptionActivity.class);
-              // this is where parcelable comes in, parcelable lets u pass an object from activity to acitivty
               intent.putExtra("EDIT_SUBSCRIPTION", subList.get(position));
               arrayPosition = position;
               totalMonthlyCharge -= Double.parseDouble(subList.get(position).getCharge());
@@ -87,8 +76,12 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart(){
         super.onStart();
-        //loadFromFile();
+        loadFromFile();
+        adapter = new ArrayAdapter<Subscription>(this,
+                R.layout.list_item, subList);
+        oldSubList.setAdapter(adapter);
     }
+
 
     /** Called when the user taps the ADD A NEW SUBSCRIPTION button*/
     public void addSubscription(View view){
@@ -126,22 +119,20 @@ public class MainActivity extends AppCompatActivity {
                 adapter.notifyDataSetChanged();
             }
         }
-        //saveInFile();
+        saveInFile();
     }
 
     /**
-     * Saves Subscriptions in list (most of code from LonelyTwitter)
+     * Saves Subscriptions into file
      */
     private void saveInFile() {
         try {
-
-            FileOutputStream fos = openFileOutput(FILENAME,
-                    Context.MODE_PRIVATE);
-            BufferedWriter out = new BufferedWriter(new OutputStreamWriter(fos));
-
-            Gson gson = new Gson();
-            gson.toJson(subList, out);
-            out.flush();
+            FileOutputStream fos = openFileOutput(FILENAME, Context.MODE_PRIVATE);
+            for(Subscription item: subList){
+                fos.write(item.toString().getBytes());
+            }
+            fos.flush();
+            fos.close();
 
         } catch (FileNotFoundException e) {
             // TODO Auto-generated catch block
@@ -151,51 +142,44 @@ public class MainActivity extends AppCompatActivity {
             throw new RuntimeException();
         }
     }
-/*    private void saveInFile() {
-        try {
-
-            //FileOutputStream fos = openFileOutput(FILENAME,
-            //        Context.MODE_PRIVATE);
-            //BufferedWriter out = new BufferedWriter(new OutputStreamWriter(fos));
-            FileOutputStream fos = new FileOutputStream(FILENAME);
-            DataOutputStream outStream = new DataOutputStream(new BufferedOutputStream(fos));
-           // outStream.writeUTF(value);
-            //outStream.close();
-            for(Subscription natty: subList){
-                //out.write(natty.toString());
-                //System.out.println(natty.toString());
-                outStream.writeUTF(natty.toString());
-                outStream.close();
-            }
-            //out.close();
-            *//*Gson gson = new Gson();
-            gson.toJson(subList, out);
-            out.flush();*//*
-
-        } catch (FileNotFoundException e) {
-            // TODO Auto-generated catch block
-            throw new RuntimeException();
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            throw new RuntimeException();
-        }
-    }*/
 
     /**
-     * Load subscription from list (most of code from LonelyTwitter)
+     * Load subscription from file into ArrayList
      */
     private void loadFromFile() {
 
         try {
+            String line = "";
             FileInputStream fis = openFileInput(FILENAME);
-            BufferedReader in = new BufferedReader(new InputStreamReader(fis));
-
-            Gson gson = new Gson();
-
-            // Taken https://stackoverflow.com/questions/12384064/gson-convert-from-json-to-a-typed-arraylistt
-            // 2018-01-23
-            Type listType = new TypeToken<ArrayList<Subscription>>(){}.getType();
-            subList = gson.fromJson(in, listType);
+            InputStreamReader isr = new InputStreamReader(fis);
+            BufferedReader br = new BufferedReader(isr);
+            int count = 0;
+            Subscription reAdd = new Subscription(this);
+            while ((line = br.readLine()) != null) {
+                String[] token = line.split(": ", 2);
+                if (token[0].equals("Name")){
+                    reAdd.setName(token[1]);
+                    count++;
+                }
+                else if (token[0].equals("Date Created")){
+                    reAdd.setDate(token[1]);
+                    count++;
+                }
+                else if (token[0].equals("Monthly Charge")){
+                    reAdd.setCharge(token[1].substring(1));
+                    count++;
+                }
+                else if (token[0].equals("Comment")){
+                    reAdd.setComment(token[1]);
+                    count++;
+                }
+                if (count == 4){
+                    subList.add(reAdd);
+                    reAdd = new Subscription(this);
+                    count = 0;
+                }
+            }
+            fis.close();
 
         } catch (FileNotFoundException e) {
             subList = new ArrayList<Subscription>();

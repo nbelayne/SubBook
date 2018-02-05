@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 
 import java.lang.*;
@@ -31,7 +30,6 @@ public class DisplayNewSubscriptionActivity extends AppCompatActivity {
         startDate =  findViewById(R.id.dateEdit);
         subCharge = findViewById(R.id.chargeEdit);
         subComment =  findViewById(R.id.commentEdit);
-        //Button doneButton = findViewById(R.id.doneButton);
 
         Intent i = getIntent();
         Subscription newSub = (Subscription) i.getParcelableExtra("EDIT_SUBSCRIPTION");
