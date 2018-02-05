@@ -14,11 +14,14 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.DataOutputStream;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
@@ -64,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
                 monthlyCharge.setText("$" + String.format("%.2f", totalMonthlyCharge));
                 subList.remove(position);
                 adapter.notifyDataSetChanged();
-                //saveInFile();
+                saveInFile();
                 return true;
             }
         });
@@ -85,32 +88,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onStart(){
         super.onStart();
         //loadFromFile();
-        //adapter.notifyDataSetChanged();
-        //saveInFile();
-    }
-
-    /**
-     * Load subscription from list (most of code from LonelyTwitter)
-     */
-    private void loadFromFile() {
-
-        try {
-            FileInputStream fis = openFileInput(FILENAME);
-            BufferedReader in = new BufferedReader(new InputStreamReader(fis));
-
-            Gson gson = new Gson();
-
-            // Taken https://stackoverflow.com/questions/12384064/gson-convert-from-json-to-a-typed-arraylistt
-            // 2018-01-23
-            Type listType = new TypeToken<ArrayList<Subscription>>(){}.getType();
-            subList = gson.fromJson(in, listType);
-
-        } catch (FileNotFoundException e) {
-            subList = new ArrayList<Subscription>();
-        } catch (IOException e) {
-            throw new RuntimeException();
-        }
-
     }
 
     /** Called when the user taps the ADD A NEW SUBSCRIPTION button*/
@@ -134,7 +111,6 @@ public class MainActivity extends AppCompatActivity {
                 TextView monthlyCharge = findViewById(R.id.monthlyCharge);
                 monthlyCharge.setText("$" + String.format("%.2f", totalMonthlyCharge));
                 adapter.notifyDataSetChanged();
-                saveInFile();
             }
         }
         else if (requestCode == 1){
@@ -148,14 +124,9 @@ public class MainActivity extends AppCompatActivity {
                 TextView monthlyCharge = findViewById(R.id.monthlyCharge);
                 monthlyCharge.setText("$" + String.format("%.2f", totalMonthlyCharge));
                 adapter.notifyDataSetChanged();
-                saveInFile();
             }
         }
-/*            else {
-                Toast.makeText(getApplicationContext(),
-                        "DID NOT RECEIVE ACTIVITY_RESULT_OK",
-                        Toast.LENGTH_SHORT).show();
-            }*/
+        saveInFile();
     }
 
     /**
@@ -179,6 +150,59 @@ public class MainActivity extends AppCompatActivity {
             // TODO Auto-generated catch block
             throw new RuntimeException();
         }
+    }
+/*    private void saveInFile() {
+        try {
+
+            //FileOutputStream fos = openFileOutput(FILENAME,
+            //        Context.MODE_PRIVATE);
+            //BufferedWriter out = new BufferedWriter(new OutputStreamWriter(fos));
+            FileOutputStream fos = new FileOutputStream(FILENAME);
+            DataOutputStream outStream = new DataOutputStream(new BufferedOutputStream(fos));
+           // outStream.writeUTF(value);
+            //outStream.close();
+            for(Subscription natty: subList){
+                //out.write(natty.toString());
+                //System.out.println(natty.toString());
+                outStream.writeUTF(natty.toString());
+                outStream.close();
+            }
+            //out.close();
+            *//*Gson gson = new Gson();
+            gson.toJson(subList, out);
+            out.flush();*//*
+
+        } catch (FileNotFoundException e) {
+            // TODO Auto-generated catch block
+            throw new RuntimeException();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            throw new RuntimeException();
+        }
+    }*/
+
+    /**
+     * Load subscription from list (most of code from LonelyTwitter)
+     */
+    private void loadFromFile() {
+
+        try {
+            FileInputStream fis = openFileInput(FILENAME);
+            BufferedReader in = new BufferedReader(new InputStreamReader(fis));
+
+            Gson gson = new Gson();
+
+            // Taken https://stackoverflow.com/questions/12384064/gson-convert-from-json-to-a-typed-arraylistt
+            // 2018-01-23
+            Type listType = new TypeToken<ArrayList<Subscription>>(){}.getType();
+            subList = gson.fromJson(in, listType);
+
+        } catch (FileNotFoundException e) {
+            subList = new ArrayList<Subscription>();
+        } catch (IOException e) {
+            throw new RuntimeException();
+        }
+
     }
 
 }
