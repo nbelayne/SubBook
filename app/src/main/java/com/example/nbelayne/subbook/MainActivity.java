@@ -123,7 +123,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * Saves Subscriptions into file
+     * Saves Subscriptions into file (JingMing Huang's code)
      */
     private void saveInFile() {
         try {
@@ -144,7 +144,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * Load subscription from file into ArrayList
+     * Load subscription from file into ArrayList (JingMing Huang's code structure)
      */
     private void loadFromFile() {
 
