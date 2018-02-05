@@ -6,8 +6,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
-
 import java.lang.*;
+
+/**
+ * Created by nbelayne on 2/3/18.
+ */
 
 public class DisplayNewSubscriptionActivity extends AppCompatActivity {
 
@@ -41,6 +44,7 @@ public class DisplayNewSubscriptionActivity extends AppCompatActivity {
 
     //https://stackoverflow.com/questions/10407159/how-to-manage-startactivityforresult-on-android
     //2018-02-04
+    // method is implemented when the "Done" button is pressed on the activity
     public void newSubscription(View view){
         String nameText = subName.getText().toString();
         String dateText = startDate.getText().toString();

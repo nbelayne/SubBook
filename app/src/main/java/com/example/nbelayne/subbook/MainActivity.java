@@ -10,7 +10,6 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
-
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -19,9 +18,12 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 
-
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
+/**
+ * Created by nbelayne on 2/3/18.
+ *
+ * NOTE: my loadFromFile() and saveInFile() methods were largely based off of Jingming Huang's
+ * code structure.
+ */
 
 public class MainActivity extends AppCompatActivity {
     public static final String FILENAME = "subscriptions.txt";
@@ -34,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
     private ListView oldSubList;
     private ArrayList<Subscription> subList;
     private ArrayAdapter<Subscription> adapter;
-    private Double totalMonthlyCharge = 0.0;
+    private TextView totalMonthlyCharge;
     private int arrayPosition;
 
     @Override
@@ -43,18 +45,12 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         oldSubList =  findViewById(R.id.subList);
-
         subList = new ArrayList<>();
-        /*adapter = new ArrayAdapter<Subscription>(this,
-                R.layout.list_item, subList);
-        oldSubList.setAdapter(adapter);*/
+        totalMonthlyCharge = findViewById(R.id.monthlyCharge);
 
         oldSubList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                totalMonthlyCharge -= Double.parseDouble(subList.get(position).getCharge());
-                TextView monthlyCharge = findViewById(R.id.monthlyCharge);
-                monthlyCharge.setText("$" + String.format("%.2f", totalMonthlyCharge));
                 subList.remove(position);
                 adapter.notifyDataSetChanged();
                 saveInFile();
@@ -67,7 +63,6 @@ public class MainActivity extends AppCompatActivity {
               Intent intent = new Intent(getApplicationContext(), DisplayNewSubscriptionActivity.class);
               intent.putExtra("EDIT_SUBSCRIPTION", subList.get(position));
               arrayPosition = position;
-              totalMonthlyCharge -= Double.parseDouble(subList.get(position).getCharge());
               startActivityForResult(intent, 1);
           }
         });
@@ -86,7 +81,6 @@ public class MainActivity extends AppCompatActivity {
     /** Called when the user taps the ADD A NEW SUBSCRIPTION button*/
     public void addSubscription(View view){
         Intent intent = new Intent(this, DisplayNewSubscriptionActivity.class);
-        // this is where parcelable comes in, parcelable lets u pass an object from activity to acitivty
         intent.putExtra("EDIT_SUBSCRIPTION", new Subscription(this));
         startActivityForResult(intent, 0);
     }
@@ -100,9 +94,7 @@ public class MainActivity extends AppCompatActivity {
                 sub.setCharge(data.getStringExtra(SUB_CHARGE));
                 sub.setDate(data.getStringExtra(SUB_DATE));
                 subList.add(sub);
-                totalMonthlyCharge += Double.parseDouble(sub.getCharge());
-                TextView monthlyCharge = findViewById(R.id.monthlyCharge);
-                monthlyCharge.setText("$" + String.format("%.2f", totalMonthlyCharge));
+                adapter.notifyDataSetChanged();
                 adapter.notifyDataSetChanged();
             }
         }
@@ -113,9 +105,6 @@ public class MainActivity extends AppCompatActivity {
                 sub.setComment(data.getStringExtra(SUB_COMMENT));
                 sub.setCharge(data.getStringExtra(SUB_CHARGE));
                 sub.setDate(data.getStringExtra(SUB_DATE));
-                totalMonthlyCharge += Double.parseDouble(sub.getCharge());
-                TextView monthlyCharge = findViewById(R.id.monthlyCharge);
-                monthlyCharge.setText("$" + String.format("%.2f", totalMonthlyCharge));
                 adapter.notifyDataSetChanged();
             }
         }
@@ -123,7 +112,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * Saves Subscriptions into file (JingMing Huang's code)
+     * Saves Subscriptions into file
      */
     private void saveInFile() {
         try {
@@ -141,13 +130,15 @@ public class MainActivity extends AppCompatActivity {
             // TODO Auto-generated catch block
             throw new RuntimeException();
         }
+        loadFromFile();
     }
 
     /**
-     * Load subscription from file into ArrayList (JingMing Huang's code structure)
+     * Load subscription from file into ArrayList
      */
     private void loadFromFile() {
-
+        subList.clear();
+        Double tmc = 0.00;
         try {
             String line = "";
             FileInputStream fis = openFileInput(FILENAME);
@@ -167,6 +158,7 @@ public class MainActivity extends AppCompatActivity {
                 }
                 else if (token[0].equals("Monthly Charge")){
                     reAdd.setCharge(token[1].substring(1));
+                    tmc += Double.parseDouble(token[1].substring(1));
                     count++;
                 }
                 else if (token[0].equals("Comment")){
@@ -180,7 +172,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
             fis.close();
-
+            totalMonthlyCharge.setText("$" + String.format("%.2f", tmc));
         } catch (FileNotFoundException e) {
             subList = new ArrayList<Subscription>();
         } catch (IOException e) {

@@ -89,7 +89,6 @@ public class Subscription implements Parcelable {
      * @param newDate name of start date of new com.example.nbelayne.subbook.Subscription
      */
     public void setDate(String newDate){
-        // check yyyy-mm-dd
         String year;
         int yearNum = 0;
         String month;
@@ -142,7 +141,6 @@ public class Subscription implements Parcelable {
      * @param newCharge monthly charge of new com.example.nbelayne.subbook.Subscription
      */
     public void setCharge(String newCharge){
-        // check if charge is correct . ie positive
         Double chargeNum;
         chargeNum = Double.parseDouble(newCharge);
         if (chargeNum >= 0.0){
@@ -170,12 +168,10 @@ public class Subscription implements Parcelable {
      * @param newComment new comments for com.example.nbelayne.subbook.Subscription
      */
     public void setComment(String newComment){
-        // check if newcomment < 30 chars
         if (newComment.length() <= 20){
             this.comment = newComment;
         }
         else {
-            // look at toast class
             Toast.makeText(this.context,
                     "Length of comment must be less than 30 characters. Please Try Again.",
                     Toast.LENGTH_SHORT).show();
